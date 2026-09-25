@@ -15,3 +15,21 @@ class SingletonObservable:
     def notificar(self, *args, **kwargs): 
         for funcion in self._observadores: 
             funcion(*args, **kwargs)
+            
+class Aerolinea(SingletonObservable): 
+    def __init__(self): 
+        if not hasattr(self, "vuelos"): 
+            self.vuelos = [] 
+    
+    def registrar_vuelo(self, vuelo): 
+        self.vuelos.append(vuelo) 
+        self.notificar(vuelo)
+        
+class Joyeria(SingletonObservable): 
+    def __init__(self): 
+        if not hasattr(self, "ventas"): 
+            self.ventas = [] 
+    
+    def registrar_venta(self, venta): 
+        self.ventas.append(venta) 
+        self.notificar(venta)

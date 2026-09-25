@@ -1,6 +1,6 @@
 import ttkbootstrap as ttk 
 from ttkbootstrap.constants import * 
-from singleton_observable import SingletonObservable 
+from singleton_observable import Aerolinea, Joyeria, SingletonObservable 
 
 class GestorPrestamos(SingletonObservable): 
     def __init__(self): 
@@ -28,7 +28,7 @@ notebook.pack(fill=BOTH, expand=True, padx=10, pady=10)
 
 # ---------- Pestaña 1: Biblioteca ---------- 
 tab_biblioteca = ttk.Frame(notebook) 
-notebook.add(tab_biblioteca, text="Biblioteca") 
+notebook.add(tab_biblioteca, text="Biblioteca WAMA") 
 
 tabla_prestamos = ttk.Treeview(tab_biblioteca, columns=("libro", "multa"), show="headings") 
 tabla_prestamos.heading("libro", text="Libro") 
@@ -48,7 +48,7 @@ ttk.Button(tab_biblioteca, text="Agregar préstamo de prueba", bootstyle="succes
 
 # ---------- Pestaña 2: Juguetería ---------- 
 tab_jugueteria = ttk.Frame(notebook) 
-notebook.add(tab_jugueteria, text="Juguetería")
+notebook.add(tab_jugueteria, text="Juguetería WAMA")
 tabla_ventas = ttk.Treeview(tab_jugueteria, columns=("juguete", "total"), show="headings") 
 tabla_ventas.heading("juguete", text="Juguete") 
 tabla_ventas.heading("total", text="Total") 
@@ -64,5 +64,44 @@ def refrescar_ventas(_=None):
 gestor_jugueteria.suscribir(refrescar_ventas) 
 
 ttk.Button(tab_jugueteria, text="Agregar venta de prueba", bootstyle="success", command=lambda: gestor_jugueteria.registrar({"juguete": "Robot", "total": 150.0}) ).pack(pady=8) 
+    
+# ---------- Pestaña 3: Aerolínea ---------- 
+tab_aerolinea = ttk.Frame(notebook) 
+notebook.add(tab_aerolinea, text="Aerolínea WAMA")
+tabla_vuelos = ttk.Treeview(tab_aerolinea, columns=("destino", "precio"), show="headings") 
+tabla_vuelos.heading("destino", text="Destino") 
+tabla_vuelos.heading("precio", text="Precio") 
+tabla_vuelos.pack(fill=BOTH, expand=True, padx=10, pady=10) 
+
+gestor_aerolinea = Aerolinea() 
+
+def refrescar_vuelos(_=None): 
+    tabla_vuelos.delete(*tabla_vuelos.get_children()) 
+    for v in gestor_aerolinea.vuelos: 
+        tabla_vuelos.insert("", "end", values=(v["destino"], v["precio"])) 
+
+gestor_aerolinea.suscribir(refrescar_vuelos) 
+
+ttk.Button(tab_aerolinea, text="Agregar vuelo de prueba", bootstyle="success", command=lambda: gestor_aerolinea.registrar_vuelo({"destino": "Madrid", "precio": 200.0}) ).pack(pady=8) 
+
+# ---------- Pestaña 4: Joyería ----------
+tab_joyeria = ttk.Frame(notebook) 
+notebook.add(tab_joyeria, text="Joyería WAMA")
+tabla_ventas = ttk.Treeview(tab_joyeria, columns=("juguete", "total"), show="headings") 
+tabla_ventas.heading("juguete", text="Juguete") 
+tabla_ventas.heading("total", text="Total") 
+tabla_ventas.pack(fill=BOTH, expand=True, padx=10, pady=10) 
+
+gestor_joyeria = Joyeria() 
+
+def refrescar_ventas(_=None): 
+    tabla_ventas.delete(*tabla_ventas.get_children()) 
+    for v in gestor_joyeria.ventas: 
+        tabla_ventas.insert("", "end", values=(v["juguete"], v["total"])) 
+
+gestor_joyeria.suscribir(refrescar_ventas) 
+
+ttk.Button(tab_joyeria, text="Agregar venta de prueba", bootstyle="success", command=lambda: gestor_joyeria.registrar_venta({"juguete": "Anillo", "total": 1000.0}) ).pack(pady=8) 
+
 if __name__ == "__main__": 
     app.mainloop()
